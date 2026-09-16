@@ -4,9 +4,9 @@
   "description": "Whatsapp",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js",
-    "dev": "nodemon server.js",
-    "NodeJs": "nodemon NodeJs.js"
+    "NodeJs": "nodemon NodeJs.js",
+    "start": "node start.js",
+    "dev": "nodemon start.js"
   },
   "dependencies": {
     "ejs": "^3.1.6",

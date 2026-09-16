@@ -1,16 +1,19 @@
+const express = require("express");
+const http = require("http");
+const path = require("path");
+const socketIO = require("socket.io");
 
-const app = require(`express`)();
-const server = require(`http`).createServer(app);
-const io = require(`socket.io`)(server);
+const app = express();
+const server = http.createServer(app);
+const io = socketIO(server);
 
-const path = `views`;
+app.engine("html", require("ejs").renderFile);
+app.set("view engine", "html");
+app.set("views", path.join(__dirname, "views"));
 
-app.engine(`html`, require('ejs').renderFile);
-app.set(`view engine`, `html`);
-
-app.get([`/home`, `/`], (req, res) => {
-	res.render("Whatsapp2");
-})
+app.get(["/home", "/"], (req, res) => {
+    res.render("Whatsapp2");
+});
 
 let Socket_Array = [];
 let Room;
@@ -50,8 +53,5 @@ io.on(`connection`, (socket) => {
 
 });
 
-server.listen(process.env.PORT || 8000, ()=>{
-	console.log(`Listening....`);
-});
 
-
+module.exports = server;
