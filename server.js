@@ -8,7 +8,7 @@ const path = `views`;
 app.engine(`html`, require('ejs').renderFile);
 app.set(`view engine`, `html`);
 
-app.get(`/home`, (req, res) => {
+app.get([`/home`, `/`], (req, res) => {
 	res.render("Whatsapp2");
 })
 
@@ -50,7 +50,7 @@ io.on(`connection`, (socket) => {
 
 });
 
-server.listen(process.env.PORT || 8000, ()=>{
+server.listen(8000, ()=>{
 	console.log(`Listening....`);
 });
 
