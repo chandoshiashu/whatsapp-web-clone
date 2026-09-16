@@ -1,0 +1,94 @@
+*{
+	padding: 0;
+	margin: 0;
+}
+
+.Container{
+	height: 100vh;
+	width: 100vw;
+}
+
+#nav{
+	height: 10%;
+	width: 100%;
+	background-color: blueviolet;
+}
+
+#body{
+	height: 90%;
+	width: 100%;
+	display: flex;
+}
+
+#List{
+	height: 100%;
+	width: 35%;
+	background-color: blue;
+}
+
+#Data{
+	height: 100%;
+	width: 65%;
+}
+
+#Object_Info{
+	height: 10%;
+	width: 100%;
+	background-color: darkcyan;
+}
+
+#Chats{
+	height: 85%;
+	width: 100%;
+	background-color: cyan;
+	overflow-y: auto;
+}
+
+#Send_Bar{
+	height: 5%;
+	width: 100%;
+	display: flex;
+}
+
+#Send_Bar Input{
+	height: 100%;
+	width: 90%;
+	background-color: greenyellow;
+	border: none;
+}
+
+#Send{
+	height: 100%;
+	width: 10%;
+	background-color: green;
+}
+
+
+.message{
+	height: 10vh;
+	width: 20vw;
+	border: 2px solid salmon;
+	border-radius: 20px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.left{
+	float : left;
+	clear: both;
+}
+
+.right{
+	float : right;
+	clear: both;
+}
+
+
+
+
+
+
+
+
+

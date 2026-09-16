@@ -1,0 +1,324 @@
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Chat Application</title>
+	<script src="http://localhost:5000/socket.io/socket.io.js"></script>
+	<script src="https://kit.fontawesome.com/fb57c5bd7c.js" crossorigin="anonymous"></script>
+
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@1,700&display=swap" rel="stylesheet">
+
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Balsamiq+Sans:ital@1&display=swap" rel="stylesheet">
+
+</head>
+
+<style>
+
+	*{
+		padding: 0;
+		margin: 0;
+	}
+
+	.Container{
+		height: 100vh;
+		width: 100vw; 
+	}
+
+	#nav{
+		height: 10%;
+		width: 100%;
+		background-color: blueviolet;
+		display: flex;
+	}
+
+	#Whatsapp_Icon{
+		align-self: center;
+		font-size: 3.75rem;
+		margin-left: 1vw;
+	}
+
+	#Logo_Name{
+		align-self: center;
+		font-size: 1.75rem;
+		font-weight: bold;
+		font-style: italic;
+		margin-left: 0.5vw;
+	}
+
+	#Exit{
+		position: absolute;
+		font-size: 1.75rem;
+		align-self: center;
+		right: 1vw;
+		color: aquamarine;
+	}
+
+	#Nav_Header{
+		display: block;
+		width: 30vw;
+		margin: auto;
+		font-size: 1.5rem;
+		align-self: center;
+		font-size: 1.75rem;
+		font-family: 'DM Sans', sans-serif;
+	}
+
+	#body{
+		height: 90%;
+		width: 100%;
+		display: flex;
+	}
+
+	#List{
+		height: 100%;
+		width: 35%;
+		/*background-color: #b831f2;*/
+		/*background-color: darkslateblue;*/
+		background-image: linear-gradient(darkslateblue, darkviolet);
+		display: grid;
+		grid-template-rows: repeat(10, 1fr);
+		grid-template-columns: repeat(1, 1fr);
+		overflow-y: auto;
+	}
+
+	#Data{
+		height: 100%;
+		width: 65%;
+	}
+
+	#Object_Info{
+		height: 10%;
+		width: 100%;
+		background-color: darkcyan;
+		display: flex;
+	}
+
+	.ActiveList{
+		display: flex;
+		align-items: center;
+		background-image: linear-gradient(#71a3ff, #23adadcc);
+		color: darkblue;
+	}
+
+	.ActiveChat{
+		display: flex;
+		align-items: center;
+	}
+
+	.Profile{
+		height: 8vh;
+		width: 4vw;
+		border-radius: 4vw;
+		border: 1px solid black;
+		background-color: white;
+		margin-left: 1vw;
+	}
+
+	.Chat_BTN{
+		margin-left: auto;
+		margin-right: 1vw;
+		height : 4vh;
+		width: 7vw;
+		border-radius: 7vw;
+		font-size: 1.125rem;
+	}
+
+	#Group_Name{
+		align-self : center;
+		font-size: 1.5rem;
+		margin-left: 0.75vw;
+		font-family: 'Balsamiq Sans', cursive;
+		font-weight: 500;
+	}
+
+	.Name{
+		align-self : center;
+		font-size: 1.5rem;
+		margin-left: 0.75vw;
+		font-family: 'Balsamiq Sans', cursive;
+		font-weight: 500;
+	}
+
+	#Ellipsis, #New_Chat, #Status{
+		position: absolute;
+		font-size: 1.5rem;
+		align-self: center;
+		color: darkblue;
+	}
+
+	#Ellipsis{right: 1vw;}
+	#New_Chat{right: 3vw;}
+	#Status{right: 6vw;}
+
+	#Chats{
+		height: 85%;
+		width: 100%;
+		background-image: url("http://www.supaksha.com/wp-content/uploads/2017/07/concept-banner-bg.png");
+		background-repeat: no-repeat;
+		background-size: cover;
+		overflow-y: auto;
+	}
+
+	#Send_Bar{
+		height: 5%;
+		width: 100%;
+		display: flex;
+	}
+
+	#Send_Bar Input{
+		height: 100%;
+		width: 90%;
+		background-image: linear-gradient(aquamarine, white);
+		border: 1px solid black;
+		font-size: 1.25rem;
+		color: darkblue;
+	}
+
+	#Send{
+		height: 100%;
+		width: 10%;
+		background-image: linear-gradient(black, blue);
+		color: white;
+		font-size: 1.25rem;
+		font-style: italic;
+	}
+
+
+	.message{
+		height: 10vh;
+		width: 20vw;
+		border: 1px solid black;
+		border-radius: 20px;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		background-image: linear-gradient(cyan, grey);
+		color : darkblue;
+		font-family: 'Balsamiq Sans', cursive;
+		font-size: 1.25rem;
+		margin-top: 0.75vh;
+		text-align: center;
+	}
+
+	.left{
+		float : left;
+		clear: both;
+	}
+
+	.right{
+		float : right;
+		clear: both;
+	}
+
+</style>
+<body>
+	<div class="Container">
+		<div id="nav">
+			<i class="fab fa-whatsapp-square" id="Whatsapp_Icon"></i><p id="Logo_Name">Whatsapp</p>
+			<p id="Nav_Header">End-To-End-Encryption</p>
+			<i class="fas fa-sign-out-alt" id="Exit"></i>
+		</div>
+		<div id="body">
+			<div id="List"></div>
+			<div id="Data">
+				<div id="Object_Info">
+					<!-- Default Name For Now -->
+					<div class="ActiveChat"><div class="Profile"></div>
+					<p id="Group_Name">iChat Group</p>
+				</div>
+					<i class="fas fa-ellipsis-v" id="Ellipsis"></i>
+					<i class="fas fa-sticky-note" id="New_Chat"></i>
+					<i class="fas fa-sync-alt" id="Status"></i>
+				</div>
+				<div id="Chats"></div>
+				<div id="Send_Bar">
+					<input type="text" id="Message" placeholder="Type Here And Send"></input>
+					<button id="Send">Send</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+<script>
+
+// Variables and Constants
+
+	let DBMS = [], List_DBMS = [], Socket_DBMS = {}, isPresent = false;
+
+	let User_Name = prompt(`Enter Your Name Please :- `), Receiver = 'iChat Group';
+	let Element, Counter = 0, str1="", str2 = "", Bool = false;
+	let iChat = `<div class="ActiveList"><div class="Profile"></div><p class="Name">iChat Group</p>
+			<button class="Chat_BTN" onclick="New_Chat('iChat Group', 0)">Chat<!--ActiveList--></button></div>`;
+
+	const socket = io("http://localhost:5000");
+	let Msg = document.getElementById(`Message`), room = '';
+
+// Functions
+	
+	Socket_DBMS["iChat Group"] = '';
+	function ListBtnClick(User){
+		document.getElementById("Chats").innerHTML = '';
+		room = Socket_DBMS[User];
+		Receiver = User;
+		DBMS.forEach((e, index) => {
+			if(DBMS[DBMS.length-1 - index]['Receiver'] === User){
+				Create_Msg(DBMS[DBMS.length-1 - index]['Sender'], DBMS[DBMS.length-1 - index]['Message'], DBMS[DBMS.length-1 - index]['Side']);
+			}
+		});
+	}
+
+	function Create_Msg(Name, Msg, Side){
+		Element = document.createElement("DIV");
+		Element.innerHTML = `${Name} ${Msg}`;
+		Element.setAttribute("class", "message");
+		Element.classList.add(Side);
+		document.getElementById("Chats").appendChild(Element);
+	}
+
+	function Cre_RoomBox(User){
+		Element = document.createElement("DIV");
+		Element.setAttribute("class", "ActiveList");
+		Element.innerHTML = `<p>${User}</p><button onclick="ListBtnClick('${User}')">Chat</button>`;
+		document.getElementById("List").appendChild(Element);
+	}
+
+// Sockets		
+
+	Create_Msg("You", "Joined the iChat", "right");
+	Cre_RoomBox("iChat Group");
+
+	socket.on("connect", () => {
+		// DBMS.unshift(`{"Sender": ${}}`);
+	});
+
+	socket.on("send-msg", (Name, Msg, Socket, Receiver_room) => {
+		console.log(Socket);
+		if(Receiver_room === socket.id && room == Socket || Receiver_room == room){
+			Create_Msg(Name, Msg, "left");
+			DBMS.unshift({"Sender": Name, "Receiver": Receiver, "Message": Msg, "Side": "left"});
+		}
+		else{
+			DBMS.unshift({"Sender": Name, "Receiver": Name, "Message": Msg, "Side": "left"});
+		}
+		List_DBMS.forEach((e) => {if(Name == e){isPresent = true;}})
+		if(isPresent == false){Cre_RoomBox(Name);} isPresent = false;
+		Socket_DBMS[Name] = Socket;
+		List_DBMS.unshift(Name);
+	});
+
+	socket.emit("recieve-msg", User_Name, "Joined the iChat", room);
+	DBMS.unshift({"Sender": "You", "Receiver": "iChat Group", "Message": "Joined the iChat", "Side": "right"});
+
+// Event Listeners
+	
+	document.getElementById(`Send`).addEventListener(`click`, (e) => {
+		Create_Msg(User_Name, `: ${Msg.value}`, "right");
+		DBMS.unshift({"Sender": User_Name, "Receiver": Receiver, "Message": Msg.value, "Side": "right"});
+		socket.emit("recieve-msg", `${User_Name}`, `: ${Msg.value}`, room);
+	});
+
+</script>
+</html>

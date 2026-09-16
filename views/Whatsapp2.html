@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<script src="/socket.io/socket.io.js"></script>
+		<script src="https://kit.fontawesome.com/fb57c5bd7c.js" crossorigin="anonymous"></script>
+		<title>Whatsapp Clone</title>
+	</head>
+	<style>
+		#Container{
+			height : 97vh;
+			width : 98vw;
+			display: flex;
+			/*background-color: aqua;*/
+			/*border: 2px solid black;*/
+		}
+
+		#Connectors{
+			height : 100%;
+			width : 35%;
+			background-color: deepskyblue;
+			display: grid;
+			overflow-y: auto;
+			grid-template-rows: repeat(20, 1fr);
+			grid-template-columns: repeat(1, 1fr);
+		}
+
+		#Chat_Box{
+			height : 100%;
+			width : 65%;
+			background-color: azure;
+		}
+
+		#Chats{
+			height : 95%;
+			width : 100%;
+			background-color: cornflowerblue;
+			overflow-y: auto;
+		}
+
+		#Message_Box{
+			display: flex;
+			height : 5%;
+			width : 100%;
+		}
+
+		#Search{
+			height : 90%;
+			width : 90%;
+			background-color: blueviolet;
+			border : none;
+			color : lime;
+			font-size: 1.25rem;
+			font-weight: bold;
+		}
+
+		#Send_BTN{
+			height : 100%;
+			width : 10%;
+			background-color: cadetblue;
+		}
+
+		.Message{
+			display: flex;
+			height : 10vh;
+			width : 20vw;
+			justify-content: center;
+			align-items: center;
+			background-color: cyan;
+			color : darkviolet;
+			font-size: 1.25rem;
+			font-family: monospace;
+			border-radius: 20px;
+			margin : 1vh 1vw;
+			padding: 20px;
+			overflow-x: auto;
+		}
+
+
+		.Left{
+			float: left;
+			clear: both;
+		}
+
+		.Right{
+			float : right;
+			clear : both;
+		}
+
+		.Connect{
+			background-color: aliceblue;
+			display: flex;
+			padding : 15px;
+			align-items: center;
+			border : 1px solid black;
+			font-size: 1.5rem;
+			font-family: monospace;
+		}
+
+		#Profile_Pic{
+			height: 7vh;
+			width: 3.5vw;
+			border-radius: 300px;
+			border : 2px solid black;
+			background-color: white;
+		}
+
+		#Name{
+			margin-left: 20px;
+			font-weight: bold;
+			font-style: italic;
+		}
+
+		#Chat_BTN{
+			position: absolute;
+			margin-left : 27vw;
+			height: 5vh;
+			width : 5vw;
+			border: 1px solid black;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			border-radius: 10px;
+			font-style: italic;
+			background-color: whitesmoke;
+			cursor : pointer;
+		}
+
+	</style>
+	<body>
+		<div id="Container">
+			<div id="Connectors"></div>
+			<div id="Chat_Box">
+				<div id="Chats"></div>
+				<div id="Message_Box">
+					<input id="Search">
+					<button id="Send_BTN">Send</button>
+				</div>
+			</div>
+		</div>
+	</body>
+	<script>
+		const socket = io();
+		let Element;
+
+		let User = prompt("Please Enter your Name :- ");
+		let List_User = `iChat`;
+		Create_MSG_Box("You Joined the Chat", "", "Right");
+		Create_Profile_Box(`iChat`);
+
+
+		var Dict = [];
+		var Func_User = "";
+
+		Info_Array = [];
+
+		// Functions
+
+			function Create_MSG_Box(Username, ExtraText, Position){
+				Element = document.createElement(`div`);
+				Element.classList.add(`Message`);
+				Element.classList.add(Position);
+				Element.innerHTML = Username+ExtraText;
+				document.getElementById(`Chats`).appendChild(Element);
+			}
+
+			function Create_Profile_Box(Username){
+				Element = document.createElement(`div`);
+				Element.classList.add(`Connect`);
+				Element.innerHTML = `<div id="Profile_Pic"></div><div id="Name">${Username}</div><div id="Chat_BTN" 
+				onclick = Chat_BTN(\`${Username}\`)>Chat</div>`;
+				document.getElementById(`Connectors`).appendChild(Element);
+			}
+
+			function Chat_BTN(Username){
+				List_User = Username;
+				document.getElementById(`Chats`).innerHTML = "";
+				if(Username == "iChat"){
+					for (var i = Info_Array.length - 1; i >= 0; i--) {
+						if(Info_Array[i].Group == "iChat"){
+							console.log(Info_Array[i].Group);
+							Create_MSG_Box(Info_Array[i].User, ` : ${Info_Array[i].Message}`, Info_Array[i].Side);
+						}
+					}
+				}
+
+				else{
+					socket.emit(`MSG_Personal`, Info_Array);
+					for (var i = Info_Array.length - 1; i >= 0; i--) {
+						if(Info_Array[i].Group == User){
+							// Create_MSG_Box(User, ` : ${Info_Array[i].Message}`, Info_Array[i].Side);
+							socket.emit(`MSG_Personal`, Info_Array[i].Message);
+						}
+
+						else if(Info_Array[i].Group == Username){
+							console.log("Yes Reached...");
+							Create_MSG_Box(User, ` : ${Info_Array[i].Message}`, Info_Array[i].Side);	
+							socket.emit(`MSG_Personal`, Info_Array[i].Message);
+						}
+					}
+				}				
+				// document.getElementById(`Chats`).innerHTML = "";
+			}
+
+
+		// Event Listeners
+
+			document.getElementById(`Send_BTN`).addEventListener(`click`, () => {
+				if(List_User == `iChat`){
+					Create_MSG_Box(`${User} : ${document.getElementById(`Search`).value}`, "", "Right");
+					Info_Array.unshift({Group : "iChat", User : User, Message : document.getElementById(`Search`).value, Side : "Right"});
+					socket.emit(`MSG`, User, document.getElementById(`Search`).value);
+					document.getElementById(`Search`).value = "";
+				}
+
+				else{
+					Create_MSG_Box(`${User} : ${document.getElementById(`Search`).value}`, "", "Right");
+					Info_Array.unshift({Group : List_User, User : User, Message : document.getElementById(`Search`).value, Side : "Right"});
+					socket.emit(`Update`, User, List_User);
+					document.getElementById(`Search`).value = "";
+				}
+			});
+
+
+		// Sockets
+
+			socket.on(`New_User`, (User) => {
+				 Create_MSG_Box(User, " Joined the Chat", "Left");
+				 Create_Profile_Box(User);
+			});
+
+			socket.on(`MSG`, (Sender, Message) => {
+				Create_MSG_Box(`${Sender} : ${Message}`, "", "Left");
+				Info_Array.unshift({Group : "iChat", User : Sender, Message : Message, Side : "Left"});
+			});
+
+			socket.on(`Update`, (Sender, Receiver) => {
+				Create_Profile_Box(Sender);
+			});
+
+			socket.on(`MSG_Personal`, (Array) => {
+				console.log(Array);
+			});
+
+		socket.emit(`New_User`, User);
+
+	</script>
+</html>
